@@ -53,27 +53,33 @@ def get_food_vals(foodType):
 
   def parse_food(text):
       out = ''
+      foods= []
 
-      for x in range(len(text)):
-          foodname = str(text[x]['name']).replace(', ','-')
+      for i in text:
+          foodname = str(i['name']).replace(', ','-')
         
-          score = text[x]['score']
+          score = i['score']
+          foods.append([foodname,int(score)])
 
-          out = '{},{}\n'.format(foodname,score)
+
+      foods = sorted(foods, key=lambda x: -x[1])
+      for food in foods:
+          out = '{},{}\n'.format(food[0],food[1])
           outfile.write(out)
 
   get= requests.get(get_url,cookies = cookiedict, headers=headers)
-
+  
   vals = json.loads(str(get.text))
 
   parse_food(vals)
   
 
 
-for x in range(len(food_type_list)):
+for food in food_type_list:
    
-   outfile.write('\n'+food_type_list[x] + ',\n')
-   get_food_vals(food_type_list[x])
+   outfile.write('\n'+food + ',\n')
+   get_food_vals(food)
    outfile.write('\n,'*3)
 outfile.close()
+
 
